@@ -1,53 +1,76 @@
 import React from 'react';
-import "./App.css";
-import Header from "./component/Header"
-import Body from "./component/Body"
-import Footer from "./component/Footer"
+import './App.css';
+import { useState, useRef } from 'react';
 
+import DiaryEditor from './component/DiaryEditor';
+import DiaryList from './component/DiaryList';
+import Lifecyle from './component/Lifecycle';
 
-
-function ChildComp() {
-  return <div>child component</div>;
-}
-
+// const dummyList = [
+//     {
+//         id: 1,
+//         author: 'ts',
+//         content: '심시해',
+//         emotion: 5,
+//         create_date: new Date().getTime(),
+//     },
+//     {
+//         id: 2,
+//         author: 'asdsd',
+//         content: '심시해',
+//         emotion: 5,
+//         create_date: new Date().getTime(),
+//     },
+//     {
+//         id: 3,
+//         author: 'gggg',
+//         content: '심시해',
+//         emotion: 5,
+//         create_date: new Date().getTime(),
+//     },
+//     {
+//         id: 4,
+//         author: 'zxczxc',
+//         content: '심시해',
+//         emotion: 5,
+//         create_date: new Date().getTime(),
+//     },
+// ];
 
 function App() {
-  // Props로 값 전달하기
-  const name = "김태식";
+    const [data, setData] = useState([]);
 
-  // 스프레드 연산자로 전달
-  const BodyProps = {
-    name: "김태식",
-    location: "고양시",
-    favorList: ["파스타", "곱창", "돼지갈비"],
-  };
+    const dataId = useRef(0);
 
-  return (
-    <div className='App'>
-      <Header />
-      <Body>
-        <ChildComp />
-      </Body>
-      <Footer />
-    </div>
-  )
+    const onCreate = (author, content, emotion) => {
+        const create_date = new Date().getTime();
+        const newItem = {
+            author,
+            content,
+            emotion,
+            create_date,
+            id: dataId.current,
+        };
+        dataId.current += 1;
+        setData([newItem, ...data]);
+    };
 
+    const onRemove = (targetId) => {
+        alert(`${targetId} 삭제완료`);
+        setData(data.filter((it) => it.id !== targetId));
+    };
 
-  const temp2 = (
-    <div className="App">
-      <Header />
-      <Body {...BodyProps} />
-      <Footer />
-    </div>
-  );
+    const onEdit = (targetId, newContent) => {
+        setData(data.map((it) => (it.id === targetId ? { ...it, content: newContent } : it)));
+    };
 
-  const temp1 = (
-    <div className="App"> 
-      <Header /> 
-      <Body name={name} location={"고양시"} />
-      <Footer />
-    </div>
-  );
+    return (
+        <div className="App">
+            <Lifecyle />
+            <DiaryEditor onCreate={onCreate} />
+            <DiaryList onEdit={onEdit} onRemove={onRemove} list={data} />
+        </div>
+    );
 }
 
 export default App;
