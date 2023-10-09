@@ -18,11 +18,9 @@ export default function DiaryEditor({ onCreate }) {
             ...prev,
             [key]: val,
         }));
-        console.log(state);
     };
 
     const handleSubmit = (e) => {
-        console.log(state);
         if (state.author.length < 1) {
             authorInput.current.focus();
             return;
